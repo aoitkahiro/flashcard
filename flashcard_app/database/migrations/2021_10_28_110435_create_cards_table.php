@@ -19,7 +19,7 @@ class CreateCardsTable extends Migration
             $table->foreign('book_id')->references('id')->on('books')->onDelete('cascade');
             $table->string('question');
             $table->string('answer');
-            $table->string('image_path')->default(no_image_path());
+            $table->string('image_path')->nullable();
             $table->timestamp('created_at')->useCurrent()->nullable();
             $table->timestamp('updated_at')->nullable();
 
