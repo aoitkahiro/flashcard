@@ -20,3 +20,13 @@ if (! function_exists('secure_asset_card_image')) {
     }
 }
 
+if (! function_exists('no_image_path')) {
+    /**
+     * @return string
+     */
+    function no_image_path(): string
+    {
+        return secure_asset_card_image('no_image.png');
+    }
+}
+
