@@ -12,8 +12,8 @@ class BooksTableSeeder extends Seeder
     public function run()
     {
         $datum = [
-            ['title' => 'プログラミング英単語','user_id' => 1],
-            ['title' => 'スターウォーズカルトクイズ','user_id' => 2],
+            ['title' => 'プログラミング英単語', 'introduction' => '英語を制すものはプログラミングを制す！' ,'user_id' => 1],
+            ['title' => 'スターウォーズカルトクイズ', 'introduction' => 'May the Force be with you.' ,'user_id' => 2],
         ];
         DB::table('books')->insert($datum);
     }
