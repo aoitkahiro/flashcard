@@ -19,3 +19,7 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('books', 'BookController')->only(['index', 'show']);
+
+Route::middleware(['auth'])->prefix('mypage')->group(function(){
+    Route::post('cards', 'UserCardController@store')->name('mypage.cards.store');
+});
