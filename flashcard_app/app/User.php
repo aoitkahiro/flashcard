@@ -39,6 +39,6 @@ class User extends Authenticatable
 
     public function cards(){
         return $this->belongsToMany(Card::class,'user_card')
-        ->using(UserCard::class)->as('config')->withTimestamps();
+        ->using(UserCard::class)->as('config')->withPivot('learning_level')->withTimestamps();
     }
 }
