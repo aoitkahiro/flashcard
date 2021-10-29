@@ -25,7 +25,7 @@
                                         <div class="form-check">
                                             <label class="form-check-label">
                                             <input type="radio" class="form-check-input" name="learning_levels[][{{ $card->id }}]" value={{ $level }}
-                                            @if ($user_cards->contains($card) && $user_cards->find($card->id)->config->learning_level == $level) ) checked @endif>
+                                            @if (Auth::user()->cards->contains($card) && Auth::user()->cards->find($card->id)->config->learning_level == $level) ) checked @endif>
                                             {{ $string }}
                                             </label>
                                         </div>  
