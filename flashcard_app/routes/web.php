@@ -19,6 +19,10 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('books', 'BookController')->only(['index', 'show']);
+Route::prefix('game')->group(function () {
+    Route::get('setting', 'ChallengeController@setting')->name('game.setting');
+    Route::post('setting', 'ChallengeController@init')->name('game.init');
+});
 
 Route::middleware(['auth'])->prefix('mypage')->group(function(){
     Route::post('cards', 'UserCardController@store')->name('mypage.cards.store');
