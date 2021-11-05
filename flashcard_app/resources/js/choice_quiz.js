@@ -26,11 +26,27 @@ class Challenge {
             challengeTimer.stop();
             questionTimer.stop();
             question.sec = questionTimer.getSeconds();
-            question.displayResult();
+            question.showResult();
             await wait(1000);
         };
         challengeTimer.stop();
         this.total_sec = challengeTimer.ms;
+    }
+
+    showResult(){
+        console.log(this);
+        quizBoardElm.style.display = 'none';
+        resultBoardElm.style.display = 'block';
+        for (let i = 0; i < this.questions.length; i++) {
+            const q = this.questions[i];
+            resultChoiceElms[i].textContent = q.playerChoice.answer;
+            if(q.isCorrect){
+                resultIsCorrectElms[i].textContent = message.correctSign;
+            }else{
+                resultIsCorrectElms[i].textContent = message.inCorrectSign;
+                resultIsCorrectElms[i].parentElement.classList.add("table-danger");
+            }
+        }
     }
     
     sendResult(){}
@@ -44,7 +60,7 @@ class ChoiceQuiz {
         this.isCorrect = null;
         this.sec = 0.0;
         this.selectionCards = this.generateSelections();
-        this.playerSelection = null;
+        this.playerChoice = null;
     }
 
     generateSelections(){
@@ -61,7 +77,14 @@ class ChoiceQuiz {
         return new Promise(resolve => {
             for(const choiceElm of choiceElms){
                 choiceElm.addEventListener("click", (e)=>{
-                    this.playerSelection = this.selectionCards.find( card => e.currentTarget.textContent == card.answer);
+                    //FIXME: choose()が呼ばれるごとに、重複してイベントが登録されてしまうので、回答済みのthis.playerChoiceが毎度上書きされてしまうバグ
+                    //ベストな解決策は、イベントの登録を一度だけにするか、毎回イベントを削除するかだが、半日やって実装できず。。
+                    //応急処置でthis.playerChoiceが上書きされないように、下記のコードを記述したが、Promiseの仕様を学習し、もっとシンプルに実装したい
+                    //cosole.log("bug");
+                    const tmpPlayerChoice = this.selectionCards.find( card => e.currentTarget.textContent == card.answer);
+                    if(tmpPlayerChoice && !this.playerChoice){
+                        this.playerChoice = tmpPlayerChoice;
+                    }
                     resolve()
                 });
             }
@@ -69,7 +92,7 @@ class ChoiceQuiz {
     }
 
     judge(){
-        this.isCorrect = this.playerSelection == this.askedCard;
+        this.isCorrect = this.playerChoice == this.askedCard;
     }
 
     initDisplay(){
@@ -80,7 +103,7 @@ class ChoiceQuiz {
         }
     }
 
-    displayResult(){
+    showResult(){
         let result;
         if(this.isCorrect){
             result = message.correct;
@@ -142,6 +165,10 @@ const missCounterElm = document.getElementById('miss-counter');
 const askedCardImageElm = document.getElementById('asked-card-image');
 const askedCardQuestionElm = document.getElementById('asked-card-question');
 const choiceElms = document.getElementsByClassName('choices');
+const quizBoardElm = document.getElementById('quiz-board');
+const resultBoardElm = document.getElementById('result-board');
+const resultChoiceElms = document.getElementsByClassName('result-choice');
+const resultIsCorrectElms = document.getElementsByClassName('result-is-correct');
 
 const gameStatusTpl = document.getElementById('game-status-tpl');
 const timerTpl = document.getElementById('timer-tpl');
@@ -152,9 +179,10 @@ const message = {
     pause: "PAUSE",
     playing: "PLAYING",
     unknown: "???",
-    questionTemplage: '表： ${question}',
     correct: '正解',
     inCorrect: '不正解',
+    correctSign: '○',
+    inCorrectSign: '×',
 };
 
 main()
@@ -163,6 +191,7 @@ async function main(){
     challenge.initDisplay();
     await countDown(3);
     await challenge.flow();
+    challenge.showResult();
     challenge.sendResult();
 }
 

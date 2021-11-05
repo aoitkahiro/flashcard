@@ -863,9 +863,9 @@ try {
 
 /***/ }),
 
-/***/ "./resources/js/choise_quiz.js":
+/***/ "./resources/js/choice_quiz.js":
 /*!*************************************!*\
-  !*** ./resources/js/choise_quiz.js ***!
+  !*** ./resources/js/choice_quiz.js ***!
   \*************************************/
 /*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -964,7 +964,7 @@ var Challenge = /*#__PURE__*/function () {
                 challengeTimer.stop();
                 questionTimer.stop();
                 question.sec = questionTimer.getSeconds();
-                question.displayResult();
+                question.showResult();
                 _context.next = 19;
                 return wait(1000);
 
@@ -1009,6 +1009,25 @@ var Challenge = /*#__PURE__*/function () {
       return flow;
     }()
   }, {
+    key: "showResult",
+    value: function showResult() {
+      console.log(this);
+      quizBoardElm.style.display = 'none';
+      resultBoardElm.style.display = 'block';
+
+      for (var i = 0; i < this.questions.length; i++) {
+        var q = this.questions[i];
+        resultChoiceElms[i].textContent = q.playerChoice.answer;
+
+        if (q.isCorrect) {
+          resultIsCorrectElms[i].textContent = message.correctSign;
+        } else {
+          resultIsCorrectElms[i].textContent = message.inCorrectSign;
+          resultIsCorrectElms[i].parentElement.classList.add("table-danger");
+        }
+      }
+    }
+  }, {
     key: "sendResult",
     value: function sendResult() {}
   }]);
@@ -1025,7 +1044,7 @@ var ChoiceQuiz = /*#__PURE__*/function () {
     this.isCorrect = null;
     this.sec = 0.0;
     this.selectionCards = this.generateSelections();
-    this.playerSelection = null;
+    this.playerChoice = null;
   }
 
   _createClass(ChoiceQuiz, [{
@@ -1056,9 +1075,18 @@ var ChoiceQuiz = /*#__PURE__*/function () {
           for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
             var choiceElm = _step2.value;
             choiceElm.addEventListener("click", function (e) {
-              _this2.playerSelection = _this2.selectionCards.find(function (card) {
+              //FIXME: choose()が呼ばれるごとに、重複してイベントが登録されてしまうので、回答済みのthis.playerChoiceが毎度上書きされてしまうバグ
+              //ベストな解決策は、イベントの登録を一度だけにするか、毎回イベントを削除するかだが、半日やって実装できず。。
+              //応急処置でthis.playerChoiceが上書きされないように、下記のコードを記述したが、Promiseの仕様を学習し、もっとシンプルに実装したい
+              //cosole.log("bug");
+              var tmpPlayerChoice = _this2.selectionCards.find(function (card) {
                 return e.currentTarget.textContent == card.answer;
               });
+
+              if (tmpPlayerChoice && !_this2.playerChoice) {
+                _this2.playerChoice = tmpPlayerChoice;
+              }
+
               resolve();
             });
           }
@@ -1072,7 +1100,7 @@ var ChoiceQuiz = /*#__PURE__*/function () {
   }, {
     key: "judge",
     value: function judge() {
-      this.isCorrect = this.playerSelection == this.askedCard;
+      this.isCorrect = this.playerChoice == this.askedCard;
     }
   }, {
     key: "initDisplay",
@@ -1089,8 +1117,8 @@ var ChoiceQuiz = /*#__PURE__*/function () {
       }
     }
   }, {
-    key: "displayResult",
-    value: function displayResult() {
+    key: "showResult",
+    value: function showResult() {
       var result;
 
       if (this.isCorrect) {
@@ -1190,6 +1218,10 @@ var missCounterElm = document.getElementById('miss-counter');
 var askedCardImageElm = document.getElementById('asked-card-image');
 var askedCardQuestionElm = document.getElementById('asked-card-question');
 var choiceElms = document.getElementsByClassName('choices');
+var quizBoardElm = document.getElementById('quiz-board');
+var resultBoardElm = document.getElementById('result-board');
+var resultChoiceElms = document.getElementsByClassName('result-choice');
+var resultIsCorrectElms = document.getElementsByClassName('result-is-correct');
 var gameStatusTpl = document.getElementById('game-status-tpl');
 var timerTpl = document.getElementById('timer-tpl');
 var missCounterTpl = document.getElementById('miss-counter-tpl');
@@ -1198,9 +1230,10 @@ var message = {
   pause: "PAUSE",
   playing: "PLAYING",
   unknown: "???",
-  questionTemplage: '表： ${question}',
   correct: '正解',
-  inCorrect: '不正解'
+  inCorrect: '不正解',
+  correctSign: '○',
+  inCorrectSign: '×'
 };
 main();
 
@@ -1223,9 +1256,10 @@ function _main() {
             return challenge.flow();
 
           case 5:
+            challenge.showResult();
             challenge.sendResult();
 
-          case 6:
+          case 7:
           case "end":
             return _context2.stop();
         }
@@ -1304,12 +1338,12 @@ function replaceTplVals(string, vals) {
 
 /***/ 1:
 /*!*******************************************!*\
-  !*** multi ./resources/js/choise_quiz.js ***!
+  !*** multi ./resources/js/choice_quiz.js ***!
   \*******************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /var/www/html/flashcard_app/resources/js/choise_quiz.js */"./resources/js/choise_quiz.js");
+module.exports = __webpack_require__(/*! /var/www/html/flashcard_app/resources/js/choice_quiz.js */"./resources/js/choice_quiz.js");
 
 
 /***/ })
