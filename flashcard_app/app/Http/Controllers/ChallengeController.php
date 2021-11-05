@@ -14,9 +14,9 @@ class ChallengeController extends Controller
         return view('challenge.setting', ['books'=>Book::all()]);
     }
 
-    public function init(Request $request){
+    public function choise_quiz(Request $request){
         $challenge = new Challenge;
         $challenge->setQuestionsFromSetting(new ChallengeSetting($request));
-        dd($challenge->toJson());
+        return view('challenge.choise_quiz', ['challenge' => $challenge]);
     }
 }

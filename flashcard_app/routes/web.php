@@ -19,9 +19,9 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('books', 'BookController')->only(['index', 'show']);
-Route::prefix('game')->group(function () {
-    Route::get('setting', 'ChallengeController@setting')->name('game.setting');
-    Route::post('setting', 'ChallengeController@init')->name('game.init');
+Route::prefix('challenge')->group(function () {
+    Route::get('setting', 'ChallengeController@setting')->name('challenge.setting');
+    Route::post('/choise_quiz', 'ChallengeController@choise_quiz')->name('challenge.choise_quiz');
 });
 
 Route::middleware(['auth'])->prefix('mypage')->group(function(){

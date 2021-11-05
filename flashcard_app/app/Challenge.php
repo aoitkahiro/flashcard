@@ -14,6 +14,7 @@ class Challenge extends Model
     }
 
     public function setQuestionsFromSetting(ChallengeSetting $setting) {
+        $this->setting = $setting;
         $books = Book::find($setting->asked_book_ids);
         for ($i = 0; $i < $setting->q_num; $i++) {
             $book = $books->random();
