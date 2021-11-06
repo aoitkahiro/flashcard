@@ -21,7 +21,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('books', 'BookController')->only(['index', 'show']);
 Route::prefix('challenge')->group(function () {
     Route::get('setting', 'ChallengeController@setting')->name('challenge.setting');
-    Route::post('/choise_quiz', 'ChallengeController@choise_quiz')->name('challenge.choise_quiz');
+    Route::post('/choise_quiz', 'ChallengeController@choice_quiz')->name('challenge.choice_quiz');
 });
 
 Route::middleware(['auth'])->prefix('mypage')->group(function(){

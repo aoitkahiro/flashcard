@@ -3,7 +3,7 @@
 
 @section('content')
 <div class="container">
-    <form action={{ route('challenge.choise_quiz') }} method="POST">
+    <form action={{ route('challenge.choice_quiz') }} method="POST">
         <div class="row pr-3">
             <h3 class="col">Game Setting</h3>
             <div class="col-1">

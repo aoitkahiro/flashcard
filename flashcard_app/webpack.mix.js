@@ -12,5 +12,5 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js')
-    .js('resources/js/choise_quiz.js', 'public/js')
+    .js('resources/js/choice_quiz.js', 'public/js')
     .sass('resources/sass/app.scss', 'public/css');
